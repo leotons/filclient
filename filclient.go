@@ -1430,10 +1430,10 @@ func (fc *FilClient) RetrieveContentWithProgressCallback(
 	if err != nil {
 		return nil, err
 	}
-	return fc.RetrieveContextFromPeerWithProgressCallback(ctx, minerPeer.ID, minerOwner, proposal, progressCallback)
+	return fc.RetrieveContentFromPeerWithProgressCallback(ctx, minerPeer.ID, minerOwner, proposal, progressCallback)
 }
 
-func (fc *FilClient) RetrieveContextFromPeerWithProgressCallback(
+func (fc *FilClient) RetrieveContentFromPeerWithProgressCallback(
 	ctx context.Context,
 	peerID peer.ID,
 	minerWallet address.Address,
@@ -1680,3 +1680,34 @@ func (fc *FilClient) RetrieveContextFromPeerWithProgressCallback(
 		AskPrice:     proposal.PricePerByte,
 	}, nil
 }
+
+type RetrievalEventCode string
+
+const (
+	RetrievalEventConnect   RetrievalEventCode = "connect"
+	RetrievalEventQueryAsk  RetrievalEventCode = "query-ask"
+	RetrievalEventProposed  RetrievalEventCode = "proposed"
+	RetrievelEventAccepted  RetrievalEventCode = "accepted"
+	RetrievalEventFirstByte RetrievalEventCode = "first-byte-received"
+	RetrievalEventFailure   RetrievalEventCode = "failure"
+	RetrievelEventSuccess   RetrievalEventCode = "success"
+)
+
+type RetrievalEvent struct {
+	Code   RetrievalEventCode
+	Status string
+}
+
+type RetrievalState struct {
+	Root  cid.Cid
+	Piece cid.Cid
+	Peer  peer.ID
+}
+
+type RetrievalSubscriber func(RetrievalEvent, RetrievalState)
+
+func (fc *FilClient) SubscribeToRetrievalEvents(RetrievalSubscriber) {
+
+}
+
+func (fc *FilClient) dispatchEvent(RetrievalEvent, RetrievalState)
