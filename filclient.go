@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ipfs/go-cid"
+	"github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-graphsync"
+	"github.com/multiformats/go-multiaddr"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,6 +19,7 @@ import (
 	"github.com/filecoin-project/boost/storagemarket/types/dealcheckpoints"
 	"github.com/filecoin-project/boost/transport/httptransport"
 	boosttypes "github.com/filecoin-project/boost/transport/types"
+	"github.com/filecoin-project/go-address"
 	cborutil "github.com/filecoin-project/go-cbor-util"
 	"github.com/filecoin-project/go-commp-utils/writer"
 	datatransfer "github.com/filecoin-project/go-data-transfer"
@@ -1492,7 +1497,6 @@ func (fc *FilClient) RetrieveContextFromPeerWithProgressCallback(
 		chanidLk.Lock()
 		chanidCopy := chanid
 		chanidLk.Unlock()
-
 		// Skip all events that aren't related to this channel
 		if state.ChannelID() != chanidCopy {
 			return
